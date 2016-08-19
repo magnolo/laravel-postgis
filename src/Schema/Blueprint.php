@@ -41,10 +41,10 @@ class Blueprint extends \Bosnadev\Database\Schema\Blueprint
      * @param      $column
      * @return \Illuminate\Support\Fluent
      */
-    public function multipolygon($column)
-    {
-        return $this->addColumn('multipolygon', $column);
-    }
+     public function multipolygon($column, $geomtype = 'GEOMETRY', $srid = 4326)
+     {
+         return $this->addColumn('multipolygon', $column, compact('geomtype', 'srid'));
+     }
 
     /**
      * Add a linestring column on the table

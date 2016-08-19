@@ -6,6 +6,8 @@ use Bosnadev\Database\Schema\Grammars\PostgresGrammar;
 
 class PostgisGrammar extends PostgresGrammar
 {
+
+    private $allowed_geom_types = ['GEOMETRY', 'GEOGRAPHY'];
     /**
      * Adds a statement to add a point geometry column
      *
@@ -47,7 +49,12 @@ class PostgisGrammar extends PostgresGrammar
      */
     public function typeMultipolygon(Fluent $column)
     {
-        return 'GEOGRAPHY(MULTIPOLYGON, 4326)';
+        // return 'GEOGRAPHY(MULTIPOLYGON, 4326)';
+        if ((in_array(strtoupper($column->geomtype), $this->allowed_geom_types)) && (is_int($column->srid))) {
+            return strtoupper($column->geomtype) . '(MULTIPOLYGON, ' . $column->srid . ')';
+        } else {
+            return dd('Error with validation of geom type or srid! (If geom type is GEOGRAPHY then the SRID must be 4326)');
+        }
     }
 
     /**
